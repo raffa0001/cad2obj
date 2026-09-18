@@ -78,3 +78,28 @@ def test_the_api_key_is_enforced_when_set(tmp_path, monkeypatch):
     assert c.get("/v1/formats").status_code == 401
     assert c.get("/v1/formats", headers={"X-API-Key": "s3cret"}).status_code == 200
     assert c.get("/v1/health").status_code == 200        # health stays open for monitoring
+
+
+def test_jt_upload_converts_to_a_package(tmp_path, monkeypatch, jt_worker, jt_sample):
+    monkeypatch.setenv("CAD_CONVERT_JOBS", str(tmp_path / "jobs"))
+    monkeypatch.setenv("CAD_CONVERT_JT_WORKER", jt_worker)
+    monkeypatch.delenv("CAD_CONVERT_API_KEY", raising=False)
+    import importlib
+    import cad_convert.api as api
+    importlib.reload(api)                  # pick up the worker path
+    assert api.jt_available()
+    from fastapi.testclient import TestClient
+    c = TestClient(api.app)
+    assert c.get("/v1/formats").json()["jt"]["available"] is True
+    with open(jt_sample, "rb") as f:
+        r = c.post("/v1/convert", files={"file": ("drag knob.jt", f)})
+    assert r.status_code == 202, r.text
+    body = r.json()
+    assert body["format"] == "jt"
+    job = _wait(c, body["id"])
+    assert job["status"] == "done", job.get("error")
+    assert job["report"]["totals"]["parts"] == 2
+    assert job["report"]["assumed_units"] == "millimetre"
+    z = zipfile.ZipFile(io.BytesIO(c.get(job["package_url"]).content))
+    assert set(z.namelist()) == {"drag_knob.obj", "drag_knob.mtl",
+                                 "drag_knob.settings", "report.json"}

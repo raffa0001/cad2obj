@@ -4,17 +4,22 @@
 purpose: ~650 MB, nested git repos, and reproducible from the recipes below.
 Everything here stays on the workstation that builds the JT worker.
 
-## JT reader: JT-Assistant / TKJT (GPL-2.0)
+## JT reader: TKJT from PyOpenJt (GPL-2.0) + JT-Assistant reference
 
 The open JT reader from Open CASCADE. GPL, so it may only ever run as its own
 process behind the API — never linked into or shipped with anything we
 distribute (see README licensing rules).
 
-- Source: https://github.com/Open-Cascade-SAS/JT-Assistant
-- Pinned commit: `e859e8c` ("JT Assistant & JT Reader publication")
-- Local copy: `vendor/JT-Assistant/` (library code is `vendor/JT-Assistant/TKJT/`)
-- Reference only: `vendor/PyOpenJt/` (jriegel's fork, commit `21faef4`) — useful
-  for its `JtTools/JtDump` usage example of the TKJT API. Not built.
+- Built: https://github.com/jriegel/PyOpenJt, `TKJT/` subtree, pinned commit `21faef4`.
+  This fork, not upstream: it builds against modern OCCT (no `MMgt_TShared`) and adds
+  LZMA segment support, which JT v10 files need. `workers/jt` compiles it in directly.
+- Reference only: https://github.com/Open-Cascade-SAS/JT-Assistant, commit `e859e8c`.
+  Upstream 2015 code, does not build against OCCT 7.8. Kept for its `JTAssistant/`
+  viewer, whose scene-graph traversal (`JTData_SceneGraph.cxx`) is the reference for
+  `jt2pkg.cpp`'s walk. Not built.
+- Samples: `vendor/PyOpenJt/Data/ExampleFiles/` (JT v8.0-v10.3, monolithic + shattered).
+  Used by `jtinfo`/`jt2pkg` validation and as test inputs when present; never committed
+  (see tests/conftest.py).
 
 ## Open CASCADE 7.8.1 (LGPL-2.1 + exception)
 

@@ -6,3 +6,5 @@ out/
 # Third-party sources and local native builds live here (see docs/VENDOR.md)
 # but are never committed: too big, and several contain nested git repos.
 vendor/
+# Local jt2pkg build (the binary is GPL; it is built on the conversion host only).
+workers/jt/build/

@@ -41,7 +41,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 ROOT = Path(__file__).resolve().parent.parent
 JOBS = Path(os.environ.get("CAD_CONVERT_JOBS", ROOT / "jobs"))
 API_KEY = os.environ.get("CAD_CONVERT_API_KEY", "")
-JT_WORKER = Path(os.environ.get("CAD_CONVERT_JT_WORKER", ROOT / "vendor" / "jt" / "build" / "jt2pkg"))
+JT_WORKER = Path(os.environ.get("CAD_CONVERT_JT_WORKER", ROOT / "workers" / "jt" / "build" / "jt2pkg"))
 MAX_UPLOAD = int(os.environ.get("CAD_CONVERT_MAX_UPLOAD_MB", "512")) * 1024 * 1024
 TIMEOUT_S = int(os.environ.get("CAD_CONVERT_TIMEOUT_S", "900"))
 MEM_BYTES = int(float(os.environ.get("CAD_CONVERT_MEM_GB", "6")) * 1024 ** 3)

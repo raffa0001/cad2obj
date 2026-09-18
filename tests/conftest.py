@@ -1,4 +1,7 @@
 """Shared fixtures: a STEP assembly whose contents are known exactly."""
+import os
+from pathlib import Path
+
 import pytest
 
 from OCP.BRepPrimAPI import BRepPrimAPI_MakeBox
@@ -50,5 +53,31 @@ def assembly_step(tmp_path_factory):
     assert w.Transfer(doc, STEPControl_StepModelType.STEPControl_AsIs)
     assert int(w.Write(path)) == 1                      # IFSelect_RetDone
     return path
+
+
+ROOT = Path(__file__).resolve().parent.parent
+
+
+@pytest.fixture(scope="session")
+def jt_worker():
+    """The jt2pkg executable, or a skip: it is GPL and built on the conversion host
+    (workers/jt/), never shipped, so test machines without it skip JT tests."""
+    cand = os.environ.get("CAD_CONVERT_JT_WORKER", str(ROOT / "workers" / "jt" / "build" / "jt2pkg"))
+    if not (os.path.isfile(cand) and os.access(cand, os.X_OK)):
+        pytest.skip(f"jt2pkg not built at {cand} (see workers/jt/README.md)")
+    return cand
+
+
+@pytest.fixture(scope="session")
+def jt_sample():
+    """A small monolithic JT file with known contents (2 parts, mm-scale knob).
+    Committed fixtures in tests/assets/ win; otherwise the PyOpenJt samples in the
+    git-ignored vendor/ tree (their fishing_reel set converts standalone)."""
+    cands = [ROOT / "tests" / "assets" / "drag_knob.jt",
+             ROOT / "vendor" / "PyOpenJt" / "Data" / "ExampleFiles" / "fishing_reel" / "drag_knob.jt"]
+    for cand in cands:
+        if cand.is_file():
+            return str(cand)
+    pytest.skip("no JT sample file available")
 
 

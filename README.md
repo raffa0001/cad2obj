@@ -3,16 +3,20 @@
 CAD -> OBJ model packages. Internal first, built to become a commercial API.
 
 **Status:** STEP worker working (`cad_convert/step_worker.py`). API front working
-(`cad_convert/api.py`). JT worker in progress. 12/12 tests passing.
+(`cad_convert/api.py`). JT worker working for tessellated JT v8/v9
+(`workers/jt/jt2pkg`, GPL, built on the conversion host only). 16/16 tests passing.
 
 ## Layout
 - `cad_convert/step_worker.py` - STEP (AP203/214/242) via Open CASCADE. CLI and library.
 - `cad_convert/api.py` - FastAPI front: upload a CAD file, poll the job, download the
   package. Each conversion runs in an isolated worker subprocess (memory/CPU/time
   limits). No Docker: sandboxing is process-level for now.
+- `workers/jt/` - JT worker sources (`jt2pkg.cpp`, `jtinfo.cpp`, `CMakeLists.txt`) plus
+  build/run notes. The binaries are GPL and git-ignored; build on the conversion host.
 - `docs/PACKAGE.md` - the output format every worker writes.
 - `docs/VENDOR.md` - third-party sources for the JT worker (git-ignored, local only).
-- `tests/` - against a STEP assembly generated with known contents.
+- `tests/` - STEP assembly generated with known contents; JT tests run when `jt2pkg`
+  is built and a sample file is present, otherwise skipped.
 
 ## Run
     python3 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
