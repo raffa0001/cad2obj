@@ -20,6 +20,8 @@ name; an instance name is used when it carries meaning (OCCT's placeholder `=>[0
 Default 20000, the tracker's `tracking_max_faces`. The worker re-tessellates coarser until it fits,
 and says so in `warnings` when that made curved outlines polygonal. Re-tessellating follows the true
 surfaces; the tracker's own decimation (its emergency guard) can only guess.
+Field result (Sep 2026, Hand Drill at ~76k tris and coarser): the tracker decimates hard on
+these packages and tracking stays healthy - hitting the budget exactly is not required for beta.
 
 ## Warnings that need a human
 - `possibly hidden` on a part: its box sits inside another part's. A heuristic - review before
