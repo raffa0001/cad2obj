@@ -1,0 +1,4 @@
+# Open CASCADE (LGPL-2.1 + exception) through the OCP bindings (Apache-2.0). Pinned: OCCT's Python
+# API changes between majors (8.0 removed TDF_LabelSequence and TopoDS.Face_s, among others).
+cadquery-ocp==8.0.1.0.0
+numpy==2.5.3

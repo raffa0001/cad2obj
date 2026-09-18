@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.pyc
+out/
+.pytest_cache/
+# Third-party sources and local native builds live here (see docs/VENDOR.md)
+# but are never committed: too big, and several contain nested git repos.
+vendor/
