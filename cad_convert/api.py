@@ -116,6 +116,8 @@ def _run(job_id: str) -> None:
     else:
         cmd = [str(JT_WORKER), str(src), str(out)]
     cmd += ["--max-triangles", str(job["max_triangles"])]
+    if job["format"] == "step":                       # the JT worker has no groups yet
+        cmd += ["--group-level", str(job.get("group_level", 2))]
     try:
         # A new session, so a timeout kills the whole process GROUP - subprocess.run's own timeout
         # kills only the direct child and would leave anything it spawned running.
@@ -186,7 +188,8 @@ def formats():
 
 
 @app.post("/v1/convert", status_code=202, dependencies=[Depends(_auth)])
-async def convert(file: UploadFile = File(...), max_triangles: int = Form(20000)):
+async def convert(file: UploadFile = File(...), max_triangles: int = Form(100000),
+                  group_level: int = Form(2)):
     _cleanup()
     name = os.path.basename(file.filename or "model")
     # Keep the base name - it is part of the tracker's model identity - but nothing a shell or a
@@ -215,6 +218,7 @@ async def convert(file: UploadFile = File(...), max_triangles: int = Form(20000)
         raise HTTPException(503, "JT conversion is not installed on this server")
     job = {"id": job_id, "status": "queued", "format": fmt, "format_version": detail,
            "filename": name, "bytes": size, "max_triangles": max(0, int(max_triangles)),
+           "group_level": max(0, int(group_level)),
            "created": time.time()}
     _write(d, job)
     _pool.submit(_run, job_id)

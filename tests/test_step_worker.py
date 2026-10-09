@@ -62,7 +62,7 @@ def test_the_obj_has_one_material_per_part_and_metric_vertices(package):
 def test_the_settings_sidecar_states_metric_units(package):
     out, _ = package
     lines = [l.split("#")[0].strip() for l in open(os.path.join(out, "housing_asm.settings"))]
-    assert [l for l in lines if l] == ["world_scale_known_1000x = 1000"]
+    assert [l for l in lines if l] == ["world_scale_known_1000x = 1000", "tracking_max_faces = 100000"]
 
 
 def test_the_report_is_written_and_lists_the_files(package):

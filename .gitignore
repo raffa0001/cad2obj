@@ -8,3 +8,5 @@ out/
 vendor/
 # Local jt2pkg build(s) - the binaries are GPL; built on the conversion host only.
 workers/jt/build*/
+# The service's own working data: uploads, packages, job state
+jobs/
