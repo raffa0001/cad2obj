@@ -2,6 +2,6 @@
 # API changes between majors (8.0 removed TDF_LabelSequence and TopoDS.Face_s, among others).
 cadquery-ocp==8.0.1.0.0
 numpy==2.5.3
-# API front (cad_convert/api.py)
+# API front (cad2obj/api.py)
 fastapi==0.141.1
 uvicorn==0.53.0

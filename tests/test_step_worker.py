@@ -10,7 +10,7 @@ import os
 
 import pytest
 
-from cad_convert.step_worker import Options, convert
+from cad2obj.step_worker import Options, convert
 
 
 @pytest.fixture(scope="module")

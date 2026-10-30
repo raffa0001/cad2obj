@@ -1,6 +1,6 @@
 # The JT worker (`jt2pkg`)
 
-JT -> model package, the way `cad_convert/step_worker.py` does STEP -> model package.
+JT -> model package, the way `cad2obj/step_worker.py` does STEP -> model package.
 GPL-2.0: it links Open CASCADE's TKJT reader, so this binary stays behind the API and is
 never shipped with anything (see the repo README licensing rules).
 
@@ -12,7 +12,7 @@ Needs the vendor tree from `docs/VENDOR.md` (JT-Assistant sources + local OCCT 7
     cmake --build workers/jt/build -j$(nproc)
 
 The executable is `workers/jt/build/jt2pkg` (git-ignored build dir; the API finds it there
-by default, or set `CAD_CONVERT_JT_WORKER`).
+by default, or set `CAD2OBJ_JT_WORKER`).
 
 ## Run
 

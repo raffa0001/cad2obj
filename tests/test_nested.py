@@ -26,7 +26,7 @@ from OCP.TopLoc import TopLoc_Location
 from OCP.UnitsMethods import UnitsMethods_LengthUnit
 from OCP.XCAFDoc import XCAFDoc_ColorType, XCAFDoc_DocumentTool
 
-from cad_convert.step_worker import Options, convert
+from cad2obj.step_worker import Options, convert
 
 
 def _name(label, text):

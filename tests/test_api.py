@@ -10,10 +10,10 @@ import pytest
 
 @pytest.fixture()
 def client(tmp_path, monkeypatch):
-    monkeypatch.setenv("CAD_CONVERT_JOBS", str(tmp_path / "jobs"))
-    monkeypatch.delenv("CAD_CONVERT_API_KEY", raising=False)
+    monkeypatch.setenv("CAD2OBJ_JOBS", str(tmp_path / "jobs"))
+    monkeypatch.delenv("CAD2OBJ_API_KEY", raising=False)
     import importlib
-    import cad_convert.api as api
+    import cad2obj.api as api
     importlib.reload(api)                  # pick up the job directory
     from fastapi.testclient import TestClient
     return TestClient(api.app), api
@@ -68,10 +68,10 @@ def test_a_broken_step_fails_the_job_not_the_service(client):
 
 
 def test_the_api_key_is_enforced_when_set(tmp_path, monkeypatch):
-    monkeypatch.setenv("CAD_CONVERT_JOBS", str(tmp_path / "jobs"))
-    monkeypatch.setenv("CAD_CONVERT_API_KEY", "s3cret")
+    monkeypatch.setenv("CAD2OBJ_JOBS", str(tmp_path / "jobs"))
+    monkeypatch.setenv("CAD2OBJ_API_KEY", "s3cret")
     import importlib
-    import cad_convert.api as api
+    import cad2obj.api as api
     importlib.reload(api)
     from fastapi.testclient import TestClient
     c = TestClient(api.app)
@@ -81,11 +81,11 @@ def test_the_api_key_is_enforced_when_set(tmp_path, monkeypatch):
 
 
 def test_jt_upload_converts_to_a_package(tmp_path, monkeypatch, jt_worker, jt_sample):
-    monkeypatch.setenv("CAD_CONVERT_JOBS", str(tmp_path / "jobs"))
-    monkeypatch.setenv("CAD_CONVERT_JT_WORKER", jt_worker)
-    monkeypatch.delenv("CAD_CONVERT_API_KEY", raising=False)
+    monkeypatch.setenv("CAD2OBJ_JOBS", str(tmp_path / "jobs"))
+    monkeypatch.setenv("CAD2OBJ_JT_WORKER", jt_worker)
+    monkeypatch.delenv("CAD2OBJ_API_KEY", raising=False)
     import importlib
-    import cad_convert.api as api
+    import cad2obj.api as api
     importlib.reload(api)                  # pick up the worker path
     assert api.jt_available()
     from fastapi.testclient import TestClient

@@ -14,7 +14,7 @@
 //   * Assembly structure and names, like STEP. Each placed shape occurrence is a part.
 //
 // LICENSING - READ THIS. TKJT is GPL-2.0, so THIS BINARY is GPL-2.0. It runs only as a
-// subprocess behind the API (see cad_convert/api.py) and is NEVER linked into or shipped
+// subprocess behind the API (see cad2obj/api.py) and is NEVER linked into or shipped
 // with anything we distribute (tracker, app, editor, client tools). Its sources live in
 // vendor/ (git-ignored) and are compiled straight into this executable.
 
@@ -627,7 +627,7 @@ int main(int argc, char** argv) {
 
   FILE* mtl = fopen((outAbs / mtlName).c_str(), "w");
   if (!mtl) fail("cannot write MTL");
-  fprintf(mtl, "# written by cad_convert jt2pkg, package v%d\n", PACKAGE_VERSION);
+  fprintf(mtl, "# written by cad2obj jt2pkg, package v%d\n", PACKAGE_VERSION);
   for (size_t i = 0; i < ctx.parts.size(); ++i) {
     RawPart& p = ctx.parts[i];
     fprintf(mtl, "\nnewmtl part_%04d\n# %s\nKd %s %s %s\n", (int)i,
@@ -637,7 +637,7 @@ int main(int argc, char** argv) {
 
   FILE* obj = fopen((outAbs / objName).c_str(), "w");
   if (!obj) fail("cannot write OBJ");
-  fprintf(obj, "# written by cad_convert jt2pkg, package v%d\n# units: metres\nmtllib %s\n",
+  fprintf(obj, "# written by cad2obj jt2pkg, package v%d\n# units: metres\nmtllib %s\n",
           PACKAGE_VERSION, mtlName.c_str());
   long long offset = 1;
   for (size_t i = 0; i < ctx.parts.size(); ++i) {
@@ -655,7 +655,7 @@ int main(int argc, char** argv) {
 
   FILE* set = fopen((outAbs / setName).c_str(), "w");
   if (!set) fail("cannot write settings");
-  fprintf(set, "# written by cad_convert jt2pkg\n"
+  fprintf(set, "# written by cad2obj jt2pkg\n"
                "# The mesh is in metres, converted from ASSUMED %s units (JT stores no unit),\n"
                "# so the tracker's world maths can trust it from the first frame instead of measuring it.\n"
                "world_scale_known_1000x = 1000\n", unitName.c_str());

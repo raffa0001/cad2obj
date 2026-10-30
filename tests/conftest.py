@@ -62,7 +62,7 @@ ROOT = Path(__file__).resolve().parent.parent
 def jt_worker():
     """The jt2pkg executable, or a skip: it is GPL and built on the conversion host
     (workers/jt/), never shipped, so test machines without it skip JT tests."""
-    cand = os.environ.get("CAD_CONVERT_JT_WORKER", str(ROOT / "workers" / "jt" / "build" / "jt2pkg"))
+    cand = os.environ.get("CAD2OBJ_JT_WORKER", str(ROOT / "workers" / "jt" / "build" / "jt2pkg"))
     if not (os.path.isfile(cand) and os.access(cand, os.X_OK)):
         pytest.skip(f"jt2pkg not built at {cand} (see workers/jt/README.md)")
     return cand

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start the conversion API (uvicorn cad_convert.api:app).
+# Start the conversion API (uvicorn cad2obj.api:app).
 #   port     listen port   (default 8200)
 #   host     bind address  (default localhost)
 #   VENV_DIR venv directory (default .venv)
@@ -16,4 +16,4 @@ if [ ! -x "$VENV_DIR/bin/uvicorn" ]; then
     exit 1
 fi
 
-exec "$VENV_DIR/bin/uvicorn" cad_convert.api:app --host "$HOST" --port "$PORT" "$@"
+exec "$VENV_DIR/bin/uvicorn" cad2obj.api:app --host "$HOST" --port "$PORT" "$@"

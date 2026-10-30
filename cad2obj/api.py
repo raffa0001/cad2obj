@@ -1,22 +1,22 @@
 """The conversion API. Upload a CAD file, get a model package back.
 
-    uvicorn cad_convert.api:app --host 127.0.0.1 --port 8200
+    uvicorn cad2obj.api:app --host 127.0.0.1 --port 8200
 
-Internal today, shaped for a commercial service later:
+Shaped to run as a service:
   * every conversion runs in a WORKER SUBPROCESS with memory, CPU and output-size limits and a wall
     clock timeout - a CAD file is untrusted input to a large C++ parser, and a crash or a runaway
     tessellation must cost one job, never the service;
   * the JT worker is a separate executable (GPL); this process only starts it and reads its files,
-    which is what keeps the GPL out of everything we distribute (see README);
-  * an API key is enforced when CAD_CONVERT_API_KEY is set, and jobs expire.
+    so the GPL reader stays out of whatever starts it (see README);
+  * an API key is enforced when CAD2OBJ_API_KEY is set, and jobs expire.
 
-Configuration (environment):
-  CAD_CONVERT_JOBS          job directory                        (default ./jobs)
-  CAD_CONVERT_API_KEY       required X-API-Key when set           (default: none, bind to localhost)
-  CAD_CONVERT_JT_WORKER     path to the jt2pkg executable         (default: vendor/jt/build/jt2pkg)
-  CAD_CONVERT_MAX_UPLOAD_MB (default 512)   CAD_CONVERT_TIMEOUT_S (default 900)
-  CAD_CONVERT_MEM_GB        (default 6)     CAD_CONVERT_WORKERS   (default 2)
-  CAD_CONVERT_KEEP_HOURS    (default 24)
+Configuration (environment; the old CAD_CONVERT_* names are still read):
+  CAD2OBJ_JOBS          job directory                        (default ./jobs)
+  CAD2OBJ_API_KEY       required X-API-Key when set           (default: none, bind to localhost)
+  CAD2OBJ_JT_WORKER     path to the jt2pkg executable         (default: vendor/jt/build/jt2pkg)
+  CAD2OBJ_MAX_UPLOAD_MB (default 512)   CAD2OBJ_TIMEOUT_S (default 900)
+  CAD2OBJ_MEM_GB        (default 6)     CAD2OBJ_WORKERS   (default 2)
+  CAD2OBJ_KEEP_HOURS    (default 24)
 """
 from __future__ import annotations
 
@@ -39,20 +39,27 @@ from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, UploadF
 from fastapi.responses import FileResponse, StreamingResponse
 
 ROOT = Path(__file__).resolve().parent.parent
-JOBS = Path(os.environ.get("CAD_CONVERT_JOBS", ROOT / "jobs"))
-API_KEY = os.environ.get("CAD_CONVERT_API_KEY", "")
-JT_WORKER = Path(os.environ.get("CAD_CONVERT_JT_WORKER", ROOT / "workers" / "jt" / "build" / "jt2pkg"))
-MAX_UPLOAD = int(os.environ.get("CAD_CONVERT_MAX_UPLOAD_MB", "512")) * 1024 * 1024
-TIMEOUT_S = int(os.environ.get("CAD_CONVERT_TIMEOUT_S", "900"))
-MEM_BYTES = int(float(os.environ.get("CAD_CONVERT_MEM_GB", "6")) * 1024 ** 3)
-WORKERS = int(os.environ.get("CAD_CONVERT_WORKERS", "2"))
-KEEP_S = float(os.environ.get("CAD_CONVERT_KEEP_HOURS", "24")) * 3600
+
+
+def _env(name: str, default):
+    """CAD2OBJ_<name>, else the pre-rename CAD_CONVERT_<name>, else the default."""
+    return os.environ.get("CAD2OBJ_" + name, os.environ.get("CAD_CONVERT_" + name, default))
+
+
+JOBS = Path(_env("JOBS", ROOT / "jobs"))
+API_KEY = _env("API_KEY", "")
+JT_WORKER = Path(_env("JT_WORKER", ROOT / "workers" / "jt" / "build" / "jt2pkg"))
+MAX_UPLOAD = int(_env("MAX_UPLOAD_MB", "512")) * 1024 * 1024
+TIMEOUT_S = int(_env("TIMEOUT_S", "900"))
+MEM_BYTES = int(float(_env("MEM_GB", "6")) * 1024 ** 3)
+WORKERS = int(_env("WORKERS", "2"))
+KEEP_S = float(_env("KEEP_HOURS", "24")) * 3600
 OUTPUT_CAP = 2 * 1024 ** 3        # no single output file larger than this
 
 JOBS.mkdir(parents=True, exist_ok=True)
 _pool = ThreadPoolExecutor(max_workers=WORKERS)
 
-app = FastAPI(title="cad_convert", version="0.1.0",
+app = FastAPI(title="cad2obj", version="0.1.0",
               description="CAD (STEP, JT) -> OBJ model packages")
 
 
@@ -112,7 +119,7 @@ def _run(job_id: str) -> None:
     _write(d, job)
     src, out = d / "input" / job["filename"], d / "package"
     if job["format"] == "step":
-        cmd = [sys.executable, "-m", "cad_convert.step_worker", str(src), str(out)]
+        cmd = [sys.executable, "-m", "cad2obj.step_worker", str(src), str(out)]
     else:
         cmd = [str(JT_WORKER), str(src), str(out)]
     cmd += ["--max-triangles", str(job["max_triangles"])]

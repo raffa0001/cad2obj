@@ -482,7 +482,7 @@ def _write_obj(out_dir: str, base: str, parts: list[Part], meshes) -> list[str]:
     # editor's part list. One token (newmtl is read as one word), unique (a part per material).
     mat = _material_names(parts)
     with open(os.path.join(out_dir, mtl), "w") as f:
-        f.write(f"# written by cad_convert step_worker, package v{PACKAGE_VERSION}\n")
+        f.write(f"# written by cad2obj step_worker, package v{PACKAGE_VERSION}\n")
         for i, p in enumerate(parts):
             r, g, b = p.color
             f.write(f"\nnewmtl {mat[i]}\n# {p.path}\nKd {r:.4f} {g:.4f} {b:.4f}\n")
@@ -496,7 +496,7 @@ def _write_obj(out_dir: str, base: str, parts: list[Part], meshes) -> list[str]:
         elif not p.group:
             order.append(i)
     with open(os.path.join(out_dir, obj), "w") as f:
-        f.write(f"# written by cad_convert step_worker, package v{PACKAGE_VERSION}\n")
+        f.write(f"# written by cad2obj step_worker, package v{PACKAGE_VERSION}\n")
         f.write("# units: metres\n")
         if grouped:
             f.write("#crln:parts=groups\n")
@@ -545,7 +545,7 @@ def _write_settings(out_dir: str, base: str, max_faces: int = 0) -> None:
     """The tracker reads <model>.settings beside the mesh (applyModelSettingsFile). Every name must
     be a real setting - an unknown one makes the tracker REFUSE the load, by design."""
     with open(os.path.join(out_dir, base + ".settings"), "w") as f:
-        f.write("# written by cad_convert step_worker\n")
+        f.write("# written by cad2obj step_worker\n")
         f.write("# The mesh is in metres, converted from the STEP file's declared unit, so the\n")
         f.write("# tracker's world maths can trust it from the first frame instead of measuring it.\n")
         f.write("world_scale_known_1000x = 1000\n")
