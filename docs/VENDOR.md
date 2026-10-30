@@ -6,9 +6,8 @@ Everything here stays on the workstation that builds the JT worker.
 
 ## JT reader: TKJT from PyOpenJt (GPL-2.0) + JT-Assistant reference
 
-The open JT reader from Open CASCADE. GPL, so it may only ever run as its own
-process behind the API — never linked into or shipped with anything we
-distribute (see README licensing rules).
+The open JT reader from Open CASCADE, GPL-2.0-or-later. `jt2pkg` compiles it in and
+runs as its own process behind the API (see the README's License section).
 
 - Built: https://github.com/jriegel/PyOpenJt, `TKJT/` subtree, pinned commit `21faef4`.
   This fork, not upstream: it builds against modern OCCT (no `MMgt_TShared`) and adds

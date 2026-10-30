@@ -1,8 +1,8 @@
 # The JT worker (`jt2pkg`)
 
 JT -> model package, the way `cad2obj/step_worker.py` does STEP -> model package.
-GPL-2.0: it links Open CASCADE's TKJT reader, so this binary stays behind the API and is
-never shipped with anything (see the repo README licensing rules).
+It compiles in Open CASCADE's TKJT reader (GPL-2.0-or-later); like the rest of the repository
+it is GPL-3.0-or-later. It runs as its own process, started by the API (see the repo README).
 
 ## Build
 
